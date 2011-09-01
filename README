@@ -1,0 +1,33 @@
+Stax XML Parser
+---------------
+An API on top of the JDK javax.xml.stream.XMLStreamReader. Performs simple and
+efficient content extraction similar to XPath but much more efficient in terms
+of memory and execution time. 
+
+Element and element text extraction is supported using the PathExpression 
+class to provide XPath like capability. Unlike XPath, navigation is forward only.
+Also attribute parsing is not currently supported. 
+
+APIs are provided to extract the first node that matches the path expression.
+Multiple expressions may be processed in a single pass. 
+
+Example:
+
+Set<PathExpression> expressions = new HashSet<PathExpression>();
+
+Map<PathExpression,Element> results;
+PathExpression px0 = new PathExpression("//Order/customerId");
+expressions.add(px0);
+
+PathExpression px1 = new PathExpression("//AppInfo/globalTransactionId");
+expressions.add(px1);
+
+PathExpression px2 = new PathExpression("//AppInfo/applicationId");
+expressions.add(px2);
+
+pathExpressionExtractor = new PathExpressionXMLContentExtractor(expressions);
+		
+results = 
+    (Map<PathExpression,Element>)pathExpressionExtractor
+            .extractElements(xml, Element.class);
+
