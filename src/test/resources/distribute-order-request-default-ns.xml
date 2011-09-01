@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<tns:DistributeOrderRequest
+	xmlns:app="http://acme.com/common/appinfo"
+	xmlns:tns="http://acme.com/messages/request/distributeorder"
+	xmlns="http://acme.com/nouns/order">
+	<app:AppInfo>
+		<app:applicationId>applicationId</app:applicationId>
+		<app:globalTransactionId>4ca2682b-879a-4de2-be4b-f67f9ef9cc7b</app:globalTransactionId>
+		<app:requestTime>2011-01-14T15:42:07.875-05:00</app:requestTime>
+		<app:endUserId>endUserId</app:endUserId>
+	</app:AppInfo>
+	<Order>
+		<id>5</id>
+		<customerId>customerFor-5</customerId>
+		<dateTime>2011-01-14T15:41:57.607-05:00</dateTime>
+		<item>
+			<quantity>438</quantity>
+			<sku>048793</sku>
+			<description>description for 048793</description>
+		</item>
+		<item>
+			<quantity>11</quantity>
+			<sku>038577</sku>
+			<description>description for 038577</description>
+		</item>
+		<item>
+			<quantity>149</quantity>
+			<sku>005012</sku>
+			<description>description for 005012</description>
+		</item>
+		<item>
+			<quantity>327</quantity>
+			<sku>091146</sku>
+			<description>description for 091146</description>
+		</item>
+		<item>
+			<quantity>40</quantity>
+			<sku>048562</sku>
+			<description>description for 048562</description>
+		</item>
+		<item>
+			<quantity>348</quantity>
+			<sku>026588</sku>
+			<description>description for 026588</description>
+		</item>
+		<item>
+			<quantity>284</quantity>
+			<sku>054331</sku>
+			<description>description for 054331</description>
+		</item>
+		<item>
+			<quantity>201</quantity>
+			<sku>026696</sku>
+			<description>description for 026696</description>
+		</item>
+		<item>
+			<quantity>266</quantity>
+			<sku>026475</sku>
+			<description>description for 026475</description>
+		</item>
+	</Order>
+</tns:DistributeOrderRequest>

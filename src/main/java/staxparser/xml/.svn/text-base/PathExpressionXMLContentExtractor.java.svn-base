@@ -1,0 +1,253 @@
+package com.emc.it.eis.common.xml;
+
+import java.io.Reader;
+import java.io.StringReader;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Map.Entry;
+import java.util.Set;
+
+import javax.xml.stream.XMLStreamException;
+import javax.xml.stream.events.XMLEvent;
+
+import org.apache.log4j.Logger;
+import org.w3c.dom.Element;
+
+/**
+ * <p>An efficient and thread safe XML parser iusing a Stax reader to perform simple content extraction. 
+ * Content for multiple nodes in an XML input source (String or Reader) is extracted in a single pass, 
+ * selected by one or more {@link PathExpression}s
+ * 
+ * <p>Only the first node that matches each expression is extracted. It is designed to match content for 
+ * elements that occur exactly once in the document. This is not intended as a complete replacement
+ * for XPath. It is designed to perform very basic XML content extraction. If more features are needed, consider using 
+ * XPath or writing a custom parser using the {@link XMLStreamReaderTemplate}.
+ * </p>
+ * 
+ * The constructor accepts a <code>Set&lt;{@link PathExpression}&gt;</code>. Each instance may perform the same extraction on 
+ * many XML documents
+ *  
+ * @author David Turanski
+ *
+ */
+public class PathExpressionXMLContentExtractor {
+	protected static enum RETURN_TYPE {text, element_as_string, element}
+	protected final Logger logger = Logger.getLogger(this.getClass());
+    private final Set<PathExpression> expressions;
+ 
+    /**
+	 * 
+	 * @param expressions A Set of {@link PathExpression} used to select content
+	 */
+	public PathExpressionXMLContentExtractor( Set<PathExpression> expressions) {
+		this.expressions = expressions;	 
+	}
+
+	/**
+	 * Returns a map containing the first element matching each {@link PathExpression} 
+	 * @param xml The XML input
+	 * @param requiredType The required result type (<code>String.class, Element.class,Node.class</code>)
+	 * @return Map containing the results. The keys correspond to the given expressions. 
+	 * A null entry value means no match was found for that expression
+	 * @throws XMLStreamException
+	 */
+	public final <T> Map<PathExpression, T> extractElements(String xml, Class<T> requiredType) 
+    throws XMLStreamException {
+		return extractElements(new StringReader(xml), requiredType);
+	}
+	
+	/**
+	 * Returns a map containing the text of the first element matching each {@link PathExpression} 
+     * @param xml The XML input
+	 * @return Map containing the results. The keys correspond to the given expressions. 
+	 * A null entry value means no match was found for that expression	 
+	 * @throws XMLStreamException
+	 */
+	public final Map<PathExpression,String> extractElementText(String xml) 
+    throws XMLStreamException {
+		return extractElementText(new StringReader(xml));
+	}
+	
+	/**
+	 * Returns a map containing the first element matching each {@link PathExpression} 
+     * @param reader A Reader for the XML input stream
+	 * @param requiredType The required result type (<code>String.class, Element.class,Node.class</code>)
+	 * @return Map containing the results. The keys correspond to the given expressions. 
+	 * A null entry value means no match was found for that expression
+	 * @throws XMLStreamException
+	 */
+	@SuppressWarnings("unchecked")
+	public final <T> Map<PathExpression, T> extractElements(Reader reader, Class<T> requiredType) 
+    throws XMLStreamException {
+	
+	   XMLStreamReaderTemplate.validateRequiredTypeIsSupported(requiredType);
+	   if (requiredType.equals(String.class)){
+	      return (Map<PathExpression, T>) this.evaluate(reader,RETURN_TYPE.element_as_string);
+	   } else {
+		 return (Map<PathExpression, T>) this.evaluate(reader, RETURN_TYPE.element); 
+	   }
+	}
+	
+	/**
+	 * Returns a map containing the text of first element matching each {@link PathExpression} 
+     * @param reader A Reader for the XML input stream
+	 * @return Map containing the results. The keys correspond to the given expressions. 
+	 * A null entry value means no match was found for that expression
+	 * @throws XMLStreamException
+	 */
+	@SuppressWarnings("unchecked")
+	public final Map<PathExpression,String> extractElementText(Reader reader) 
+    throws XMLStreamException {
+		return (Map<PathExpression,String>) this.evaluate(reader ,RETURN_TYPE.text);
+	}
+ 	
+    /**
+     * Implements the common processing algorithm for public extract...methods 
+     * @param reader A Reader for the XML input stream
+     * @param returnType specifies what type of object to return
+     * @return the results in a map
+     * @throws XMLStreamException
+     */
+	protected final Map<PathExpression,?> evaluate(Reader reader , RETURN_TYPE returnType) 
+	    throws XMLStreamException {
+		XMLStreamReaderTemplate template = new XMLStreamReaderTemplate(reader);
+		if (expressions == null || expressions.size() == 0) {
+			throw new IllegalArgumentException("Argument contains no path expressions");
+		}
+
+		Map<PathExpression,Object> expressionMap = new HashMap<PathExpression,Object>();
+		for ( PathExpression expression: expressions ) {
+			expressionMap.put(expression,null);
+		}
+
+		PathExpression currentPath = new PathExpression("/");
+		
+		
+		int event;
+		
+		boolean searching = true;
+		while (searching && (event = template.next()) != XMLEvent.END_DOCUMENT) {
+			switch (event){
+			case XMLEvent.START_ELEMENT:
+				 currentPath = currentPath.push(template.getName());
+ 				 currentPath = saveResultIfCurrentPathIsSearchTarget(template, expressionMap, currentPath, returnType);
+ 				 searching = !allResultsFound(expressionMap);
+				break;
+			case XMLEvent.END_ELEMENT:
+				currentPath = currentPath.pop();
+				break;
+			}
+		}
+		 template.close();
+		 return expressionMap;
+	}
+	
+	/**
+	 * A convenience method to convert result keys from PathExpression to String 
+	 * @param pathExpressionMap - an instance of Map<PathExpression,String>
+	 * @return - the equivalent map as Map<String,String>
+	 */
+	public static Map<String,String> convertResultsToMapStringString(Map<?, ?> pathExpressionMap) {
+		 if (pathExpressionMap == null) {
+			 return null;
+		 }
+		 
+		 Map<String,String> map = new HashMap<String,String>(pathExpressionMap.size());
+		 
+		 for (Entry<?, ?> entry: pathExpressionMap.entrySet()){
+			if (entry.getValue()!=null){
+			  map.put(entry.getKey().toString(),entry.getValue().toString()); 
+			} else {
+				map.put(entry.getKey().toString(),null);
+			}
+		 }
+		 
+		 return map;
+	}
+  
+	 /**
+     * Return the target contents for each matched node.
+     * @param returnType
+     * @return
+     */
+	protected final Object getElementContents(XMLStreamReaderTemplate template, RETURN_TYPE returnType) {
+		Object result = null;
+
+		try {
+			if (returnType.equals(RETURN_TYPE.text)) {
+				result = template.getElementText();
+			} else {
+				if (returnType.equals(RETURN_TYPE.element)){
+				  result = template.getElement(Element.class); 
+				} else {
+				  result = template.getElement(String.class); 
+				}
+			}
+		} catch (XMLStreamException e) {
+			logger.error(e.getMessage()); 
+		}
+
+		return result;
+	} 
+
+	//TODO: Check for root node
+	/*
+	 * 
+	 */
+	private PathExpression saveResultIfCurrentPathIsSearchTarget(
+			XMLStreamReaderTemplate template,
+			Map<PathExpression,Object> expressionMap,
+			PathExpression currentPath, 
+			RETURN_TYPE returnType) throws XMLStreamException {
+		  boolean found = false;
+		/*
+		 * only save the first hit. Do not overwrite
+		 */
+		
+		/*
+		 * look for exact match first
+		 */
+		if(expressionMap.containsKey(currentPath) && expressionMap.get(currentPath)== null){
+			if (logger.isDebugEnabled()) {
+			  logger.debug("saving content for " + currentPath.toString());
+			}
+			
+			expressionMap.put(currentPath, getElementContents(template, returnType));
+			found = true;
+		} else {
+			/**
+			 * look for logical match
+			 */
+		 
+		   for (Entry<PathExpression,?> entry: expressionMap.entrySet()){
+			   if (entry.getValue()==null && entry.getKey().matches(currentPath)){
+				    if (logger.isDebugEnabled()) {
+				      logger.debug("saving content for " + currentPath.toString());
+				    }
+					expressionMap.put(entry.getKey(),getElementContents(template, returnType));
+					found = true;
+				} 
+	 	   }
+		}
+		if (found) {
+		    currentPath = currentPath.pop();
+		}
+		return currentPath;
+	}
+	
+	
+	/*
+	 * 
+	 */
+	private boolean allResultsFound(Map<PathExpression,?> expressionMap) {
+		boolean allResultsFound = true;
+		for (Entry<PathExpression,?> entry: expressionMap.entrySet()){
+			if (entry.getValue() == null){
+				allResultsFound = false;
+				break;
+			}
+		}
+		return allResultsFound;
+	}
+
+}

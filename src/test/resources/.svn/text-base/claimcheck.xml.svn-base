@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ClaimCheck xmlns="http://canonical.it.emc.com/common/claimcheck" xmlns:ns2="http://canonical.it.emc.com/common/appinfo">
+  <payloadId>1f831f9a-d6aa-4734-8a5f-85483673ea78</payloadId>
+  <payloadType>java.lang.Object</payloadType>
+  <ns2:AppInfo>
+    <ns2:applicationId>myApp</ns2:applicationId>
+    <ns2:globalTransactionId>gti</ns2:globalTransactionId>
+    <ns2:requestTime>2011-01-16T09:17:59.021-05:00</ns2:requestTime>
+  </ns2:AppInfo>
+</ClaimCheck>

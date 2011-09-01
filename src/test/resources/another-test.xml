@@ -1,0 +1,1 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?><doc><PayloadContext xmlns:ns2="http://acme.com/it/enterprise/data/v1" xmlns="http://acme.com/it/enterprise/msg/v1" xmlns:ns3="http://acme.com/it/enterprise/contract/createEvent/v1"><MessageProfile/><ApplicationProfile/><TransactionProfile/><UserArea/></PayloadContext><someXML>Hello, world!</someXML></doc>

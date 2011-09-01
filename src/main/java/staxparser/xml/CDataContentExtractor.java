@@ -1,0 +1,55 @@
+package staxparser.xml;
+
+import java.util.Properties;
+
+import javax.xml.stream.XMLStreamException;
+import javax.xml.stream.XMLStreamReader;
+import javax.xml.stream.events.XMLEvent;
+/**
+ * Extract content from a CDATA section in an XML element
+ * @author David Turanski
+ *
+ */
+public class CDataContentExtractor {
+    /**
+     * 
+     * @param cdata an element containing CDATA
+     * @return the content
+     * @throws XMLStreamException
+     */
+    public String extractContent(String cdata) throws XMLStreamException {
+        XMLStreamReaderTemplate template = null;
+        String result = null;
+        try {
+
+            Properties factoryProperties = new Properties();
+            factoryProperties.put("http://java.sun.com/xml/stream/properties/report-cdata-event", Boolean.TRUE);
+            template = new XMLStreamReaderTemplate(cdata, factoryProperties);
+
+            result = (String)template.executeCallBack(new XMLStreamReaderCallback() {
+
+                @Override
+                public Object execute(XMLStreamReader xmlStreamReader) throws XMLStreamException {
+                    int event;
+                    String content = null;
+                    while (content == null && (event = xmlStreamReader.next()) != XMLEvent.END_DOCUMENT) {
+
+                        if (event == XMLEvent.CDATA) {
+                          
+                            content = xmlStreamReader.getText().trim();
+                           
+                        }
+                    }
+                  
+                    return content;
+                }
+
+            });
+            return result;
+        } finally {
+            if (template != null)
+                template.close();
+        }
+        
+    }
+}

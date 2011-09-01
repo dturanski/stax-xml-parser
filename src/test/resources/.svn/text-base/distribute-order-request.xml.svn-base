@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<tns:DistributeOrderRequest
+	xmlns:app="http://canonical.it.emc.com/common/appinfo"
+	xmlns:tns="http://canonical.it.emc.com/messages/request/distributeorder"
+	xmlns:ord="http://canonical.it.emc.com/nouns/order">
+	<app:AppInfo>
+		<app:applicationId>applicationId</app:applicationId>
+		<app:globalTransactionId>4ca2682b-879a-4de2-be4b-f67f9ef9cc7b</app:globalTransactionId>
+		<app:requestTime>2011-01-14T15:42:07.875-05:00</app:requestTime>
+		<app:endUserId>endUserId</app:endUserId>
+	</app:AppInfo>
+	<ord:Order>
+		<ord:id>5</ord:id>
+		<ord:customerId>customerFor-5</ord:customerId>
+		<ord:dateTime>2011-01-14T15:41:57.607-05:00</ord:dateTime>
+		<ord:item>
+			<ord:quantity>438</ord:quantity>
+			<ord:sku>048793</ord:sku>
+			<ord:description>description for 048793</ord:description>
+		</ord:item>
+		<ord:item>
+			<ord:quantity>11</ord:quantity>
+			<ord:sku>038577</ord:sku>
+			<ord:description>description for 038577</ord:description>
+		</ord:item>
+		<ord:item>
+			<ord:quantity>149</ord:quantity>
+			<ord:sku>005012</ord:sku>
+			<ord:description>description for 005012</ord:description>
+		</ord:item>
+		<ord:item>
+			<ord:quantity>327</ord:quantity>
+			<ord:sku>091146</ord:sku>
+			<ord:description>description for 091146</ord:description>
+		</ord:item>
+		<ord:item>
+			<ord:quantity>40</ord:quantity>
+			<ord:sku>048562</ord:sku>
+			<ord:description>description for 048562</ord:description>
+		</ord:item>
+		<ord:item>
+			<ord:quantity>348</ord:quantity>
+			<ord:sku>026588</ord:sku>
+			<ord:description>description for 026588</ord:description>
+		</ord:item>
+		<ord:item>
+			<ord:quantity>284</ord:quantity>
+			<ord:sku>054331</ord:sku>
+			<ord:description>description for 054331</ord:description>
+		</ord:item>
+		<ord:item>
+			<ord:quantity>201</ord:quantity>
+			<ord:sku>026696</ord:sku>
+			<ord:description>description for 026696</ord:description>
+		</ord:item>
+		<ord:item>
+			<ord:quantity>266</ord:quantity>
+			<ord:sku>026475</ord:sku>
+			<ord:description>description for 026475</ord:description>
+		</ord:item>
+	</ord:Order>
+</tns:DistributeOrderRequest>

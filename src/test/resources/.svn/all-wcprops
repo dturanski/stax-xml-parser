@@ -1,0 +1,41 @@
+K 25
+svn:wc:ra_dav:version-url
+V 98
+/svn/pprepo/!svn/ver/3444/trunk/CommonComponents/CICCommonComponents/eis-common/src/test/resources
+END
+foo.xml
+K 25
+svn:wc:ra_dav:version-url
+V 106
+/svn/pprepo/!svn/ver/3444/trunk/CommonComponents/CICCommonComponents/eis-common/src/test/resources/foo.xml
+END
+cdata-example.xml
+K 25
+svn:wc:ra_dav:version-url
+V 116
+/svn/pprepo/!svn/ver/3444/trunk/CommonComponents/CICCommonComponents/eis-common/src/test/resources/cdata-example.xml
+END
+expected-cdata-1.xml
+K 25
+svn:wc:ra_dav:version-url
+V 119
+/svn/pprepo/!svn/ver/3444/trunk/CommonComponents/CICCommonComponents/eis-common/src/test/resources/expected-cdata-1.xml
+END
+expected-cdata-2.xml
+K 25
+svn:wc:ra_dav:version-url
+V 119
+/svn/pprepo/!svn/ver/3444/trunk/CommonComponents/CICCommonComponents/eis-common/src/test/resources/expected-cdata-2.xml
+END
+distribute-order-request-default-ns.xml
+K 25
+svn:wc:ra_dav:version-url
+V 138
+/svn/pprepo/!svn/ver/1828/trunk/CommonComponents/CICCommonComponents/eis-common/src/test/resources/distribute-order-request-default-ns.xml
+END
+another-test.xml
+K 25
+svn:wc:ra_dav:version-url
+V 115
+/svn/pprepo/!svn/ver/1831/trunk/CommonComponents/CICCommonComponents/eis-common/src/test/resources/another-test.xml
+END
